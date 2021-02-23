@@ -2,8 +2,17 @@
 var currentEl = $("#currentDay");
 var timeTableEl = $(".container");
 
-// Fetch timesheet from localstorage if there is one, or initialize to empty array
-var timesheet = JSON.parse(localStorage.getItem("timesheet")) || ["","","","","","","","",""];
+var currentDay = moment().format("dddd, MMMM Do");
+var lastSave = localStorage.getItem("saveDate") || "";
+var timesheet;
+
+// Fetch timesheet from localstorage. If timesheet is from previous day, or does not exist, then initialize with blank.
+
+if(lastSave !== currentDay || lastSave === ""){
+    timesheet = ["","","","","","","","",""];
+} else {
+    timesheet = JSON.parse(localStorage.getItem("timesheet"));
+} 
 
 // Generate and display timetable elements.
 function createTimesheet() {
@@ -57,7 +66,7 @@ function populateTimesheet() {
 }
 
 // Display current day
-currentEl.text(moment().format("dddd, MMMM Do"));
+currentEl.text(currentDay);
 
 createTimesheet();
 populateTimesheet();
@@ -75,7 +84,8 @@ $(".saveBtn").click((e) => {
 
     var id = parseInt(hourBlock.attr("id"), 10) - 9;
 
-    // Save contents of a timeblock to timesheet array, then save to localstorage
+    // Save contents of a timeblock to timesheet array, then save to localstorage along with current date
     timesheet[id] = $($(hourBlock).children()).val();
     localStorage.setItem("timesheet", JSON.stringify(timesheet));
+    localStorage.setItem("saveDate", currentDay);
 });
