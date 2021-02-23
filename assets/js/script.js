@@ -34,9 +34,25 @@ function createTimesheet() {
 function populateTimesheet() {
     
     var textBoxes = $("textarea");
+    var time = moment().format("H");
+    var id;
 
+    // Loop through each textarea to populate with timesheet data and color-code
     for (var i = 0; i < timesheet.length; i++) {
+
+        id = parseInt($(textBoxes[i]).parent().attr("id"), 10);
+        
         $(textBoxes[i]).text(timesheet[i]);
+
+        if(id < time){
+            $(textBoxes[i]).parent().addClass("past");
+        }
+        else if (id > time){
+            $(textBoxes[i]).parent().addClass("future");
+        }
+        else {
+            $(textBoxes[i]).parent().addClass("present");
+        }
     }
 }
 
@@ -46,6 +62,7 @@ currentEl.text(moment().format("dddd, MMMM Do"));
 createTimesheet();
 populateTimesheet();
 
+// Add event listener to each save button
 $(".saveBtn").click((e) => {
     // Determine which time block
     var hourBlock;
