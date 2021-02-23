@@ -40,23 +40,25 @@ function populateTimesheet() {
     }
 }
 
-// Save a given time block
-function saveTimeBlock(event) {
-    // Determine which time block
-    // var hourBlock = $(event.target + "div");
-    // var id = parseInt(hourBlock.attr("id"), 10) - 9;
-
-    console.log(event);
-    
-    // Save contents of a timeblock to timesheet array, then save to localstorage
-    // timesheet[id] = $(hourBlock > "textarea").text();
-    // localStorage.setItem("timesheet", JSON.stringify(timesheet));
-}
-
 // Display current day
 currentEl.text(moment().format("dddd, MMMM Do"));
 
 createTimesheet();
 populateTimesheet();
 
-$(".saveBtn").on("click", saveTimeBlock(event));
+$(".saveBtn").click((e) => {
+    // Determine which time block
+    var hourBlock;
+    
+    if ($(e.target).is("i")){
+        hourBlock = $($(e.target).parent()).prev();
+    } else {
+        hourBlock = $(e.target).prev();
+    }
+
+    var id = parseInt(hourBlock.attr("id"), 10) - 9;
+
+    // Save contents of a timeblock to timesheet array, then save to localstorage
+    timesheet[id] = $($(hourBlock).children()).val();
+    localStorage.setItem("timesheet", JSON.stringify(timesheet));
+});
